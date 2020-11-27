@@ -1,0 +1,30 @@
+#---------------------------------------------------------------------------------------#
+## Mendatory !
+# Reference genomes
+REF	1	NAME1 ./examples/fasta/BY4742.fa.gz
+REF	2	NAME2 ./examples/fasta/ySR128.fa.gz
+
+# NGS reads
+# FASTQ
+>LIB1
+./examples/test_dataset/S288C_simulated1.fq.gz
+./examples/test_dataset/S288C_simulated2.fq.gz
+
+#---------------------------------------------------------------------------------------#
+## Optional
+# Running paramters
+#THREADS	20
+#MAPQ 0
+
+# Pairwise alignment & synteny block construction params
+#RESOLUTION	10000
+
+# Physical coverage paramters
+#PHY_CUTOFF	LIB1	5
+
+# SITRI paramters
+#DBC_READ_DIST_CUTOFF	1000
+
+# Cluster merging parameter
+#MERGE_MIN_READS	5
+#---------------------------------------------------------------------------------------#
