@@ -9,7 +9,7 @@ my $in_read1 = abs_path("$ARGV[0]");
 my $in_read2 = abs_path("$ARGV[1]");
 my $in_cluster = $ARGV[2];
 my $in_cpu = $ARGV[3];
-my $in_assembler_path = "/mss2/mikang/data_RBRC/ALL_TESTS/Application/program/Unicycler-0.4.7/unicycler-runner.py";
+my $in_assembler_path = "$Bin/../third_party/Unicycler-0.4.7/unicycler-runner.py";
 my $out_dir = abs_path("$ARGV[-1]");
 
 `mkdir -p $out_dir/logs`;
