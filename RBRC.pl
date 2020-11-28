@@ -96,7 +96,7 @@ print FLOG " Read id converting | working at $read_dir\n";
 foreach my $lib (natsort keys %libs){
 	my $l = $lib;
 	$l =~ s/LIB//;
-	`java -jar $Bin/sources/trimmomatic-0.39.jar PE $libs{$lib}{"F"} $libs{$lib}{"R"} $read_dir/PE.$l.F.fq $read_dir/PE_unpaired.$l.F.fq $read_dir/PE.$l.R.fq $read_dir/PE_unpaired.$l.R.fq ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads AVGQUAL:25 >& $out_dir/logs/log.trimmomatic.txt`;
+	`java -jar $Bin/sources/trimmomatic-0.39.jar PE $libs{$lib}{"F"} $libs{$lib}{"R"} $read_dir/PE.$l.F.fq $read_dir/PE_unpaired.$l.F.fq $read_dir/PE.$l.R.fq $read_dir/PE_unpaired.$l.R.fq ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads AVGQUAL:25 2> $out_dir/logs/log.trimmomatic.txt`;
 	`$Bin/src/fqNumID.pl $l F $read_dir/PE.$l.F.fq $read_dir`;
 	`$Bin/src/fqNumID.pl $l R $read_dir/PE.$l.R.fq $read_dir`;
 	$libs{$lib}{"F"} = "$read_dir/$l.F.fq";
