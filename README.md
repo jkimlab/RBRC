@@ -13,9 +13,11 @@ System requirements (tested versions)
         - python (2.7.12)
         - java (1.8.0)
         - git (2.7.4)
-        - gcc, g++ (5.4.0)
+        - gcc, g++ (7.5.0)
         - make (GNU Make 4.1)
         - zip (3.0)
+        - wget
+        - Unicycler ()
         - Sort::Key::Natural (perl library)
         - Bio::TreeIO (perl library)
         - Parallel::ForkManager (perl library)
@@ -53,54 +55,48 @@ Running RBRC
         
 * Options of running RBRC
         
-        ./RBRC.pl -p [parameter file]
+        ./RBRC.pl -p [parameter file] -o [output directory]
         
 * To run RBRC, you need to prepare a parameter file
 
-        ###############################
-        # RBRC clustering parameters #
-        ###############################
-
-        #### Running paramters
-        THREADS	<number of threads>
-        OUTDIR	<output directory>
-
-        #### Reference genomes
-        ### FASTA
+        #---------------------------------------------------------------------------------------#
+        ## Mendatory !
+        # Reference genomes
         REF	1	<Reference name 1> <Reference genome sequence 1>
         REF	2	<Reference name 2> <Reference genome sequence 2>
 
-        #### NGS reads
-        ### FASTQ
+        # NGS reads
+        # FASTQ
         >LIB1
         <F read fastq file>
         <R read fastq file>
 
-        #### Pairwise alignment & synteny block construction params
-        RESOLUTION	<Resolution to construct synteny: default = 300000>
+        #---------------------------------------------------------------------------------------#
+        ## Optional
+        # Running paramters
+        #THREADS        <number of threads: default = 1>
+        #MAPQ <read mapping quality threshold: default = 0>
 
-        #### Physical coverage paramters
-        PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
+        # Pairwise alignment & synteny block construction params
+        #RESOLUTION	<Resolution to construct synteny: default = 10000
 
-        #### Synteny-based clustering parameters
-        SYN_MIN_LEN <minimum cutoff value of synteny size: default = 1000>
-        SYN_CLUSTER_MIN_SIZE    <minimum cutoff value of cluster size from synteny clustering: default = 1000>
+        # Physical coverage paramters
+        #PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
 
-        #### Distance-based clustering paramters
-        TREE	<phylugenetic tree of reference genomes in newick format>
-        READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
-        MIN_READS	<minimum cutoff value of amount of reads in a distance-based cluster: default = 500>
+        # SITRI paramters
+        #DBC_READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
 
-        #### Cluster merging parameter
-        MERGE_MIN_READS	<minimum cutoff value of links to merge clusters: default = 5>
-
+        # Cluster merging parameter
+        #MERGE_MIN_READS	<minimum cutoff value of links to merge clusters: default = 5>
+        #---------------------------------------------------------------------------------------#
+       
 
 RBRC output
 -----------------
 
 * Clustering output
 
-        (1) output_directory/final.idRecover.cluster : list of cluster and clustered reads
+        output_directory/RBRC.cluster : list of cluster and clustered reads
          - Column 1: name of cluster
          - Column 2: Read ID
          
@@ -116,11 +112,10 @@ RBRC output
                 CLUSTER1	chr8-278382/1
                 CLUSTER1	chr8-278382/2
                 
-        (2) output_directory/post_processing/clusters.fa
-                : Clustered read sequences in FASTA format
-        (3) output_directory/post_processing/non-clusters.fa
-                : Unclustered read sequences in FASTA format
 
+* Assembly output 
+
+        output_directory/
 
 Additional information
 --------
