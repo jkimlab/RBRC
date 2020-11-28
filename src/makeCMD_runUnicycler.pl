@@ -97,7 +97,7 @@ while(<FC>){
 				}
 				else{
 						close(FRO);
-						$cmd = "$in_assembler_path -1 $out_dir/cluster.out/$pre_cluster.1.fq -2 $out_dir/cluster.out/$pre_cluster.2.fq -t $in_cpu -o $out_dir/cluster.out/$pre_cluster.out >& $out_dir/logs/log.$pre_cluster.txt";
+						$cmd = "$in_assembler_path -1 $out_dir/cluster.out/$pre_cluster.1.fq -2 $out_dir/cluster.out/$pre_cluster.2.fq -t $in_cpu -o $out_dir/cluster.out/$pre_cluster.out 2> $out_dir/logs/log.$pre_cluster.txt";
 						print "$cmd\n";
 						push(@cmds,$cmd);
 				}
