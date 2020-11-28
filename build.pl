@@ -92,7 +92,7 @@ if($mode eq "install"){
 	#  Unicycler
 	print STDERR ">> Preparing Unicycler...";
 	`tar xf $src_path/v0.4.7.tar.gz -C $thirdparty_path`;
-	`python3 ./$thirdparty_path/Unicycler-0.4.7/setup.py install --prefix=$thirdparty_path/Unicycler-0.4.7`;
+	`python3 $thirdparty_path/Unicycler-0.4.7/setup.py install --prefix=$thirdparty_path/Unicycler-0.4.7`;
 	if(-f "$thirdparty_path/Unicycler-0.4.7/unicycler-runner.py"){
 		`rm -f ./setuptools-33.1.1*`;
 		print STDERR "Done\n";
