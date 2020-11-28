@@ -42,5 +42,5 @@ RUN git clone https://github.com/jkimlab/RBRC \
 	&& cd RBRC \
 	&& ./setup.pl --install \
 	&& ./setup.pl --example \
-	&& ln -s /RBRC/third_party/SPAdes-3.9.0/spades.py /bin/
+	&& ln -s /RBRC/third_party/SPAdes-3.9.0/spades.py /bin/ \
 	&& ln -s ln -s /RBRC/third_party/ncbi-blast-2.9.0+/* /bin/
