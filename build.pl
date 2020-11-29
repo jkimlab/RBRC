@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use FindBin '$Bin';
 use File::Basename;
+use Cwd 'abs_path';
 
 my $mode = shift;
 
@@ -15,9 +16,9 @@ if(! $mode){
 	exit;
 }
 
-my $src_path = "$Bin/sources";
-my $thirdparty_path = "$Bin/third_party";
-my $log_dir = "$Bin/third_party/logs";
+my $src_path = abs_path("$Bin/sources");
+my $thirdparty_path = abs_path("$Bin/third_party");
+my $log_dir = abs_path("$Bin/third_party/logs");
 `mkdir -p $log_dir`;
 
 if($mode eq "install"){
@@ -113,7 +114,7 @@ if($mode eq "install"){
 	}
 	
 	# blast
-	print STDERR ">> Preparing SPAdes assembler...";
+	print STDERR ">> Preparing blast...";
 	`wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.9.0/ncbi-blast-2.9.0+-x64-linux.tar.gz -P $src_path/`;
 	`tar xf $src_path/ncbi-blast-2.9.0+-x64-linux.tar.gz -C $thirdparty_path`;
 	if(-f "$thirdparty_path/ncbi-blast-2.9.0+/bin/tblastn" && "$thirdparty_path/ncbi-blast-2.9.0+/bin/makeblastdb"){
@@ -125,7 +126,23 @@ if($mode eq "install"){
 		print STDERR "Error\n";
 		exit(1);
 	}
-
+	# racon
+        print STDERR ">> Preparing racon...\n";
+        `wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz -P $thirdparty_path/`;
+        chdir($thirdparty_path);
+        `tar xf cmake-3.2.2.tar.gz`;
+        chdir("cmake-3.2.2");
+        `./configure`;
+        `make`;
+        chdir($Bin);
+        `ln -s $thirdparty_path/cmake-3.2.2/bin/* /bin/`;
+        `git clone --recursive https://github.com/lbcb-sci/racon.git $thirdparty_path/racon`;
+        chdir("$thirdparty_path/racon");
+        `mkdir build`;
+        chdir("build");
+        `cmake -DCMAKE_BUILD_TYPE=Release ..`;
+        `make`;
+        `ln -s $thirdparty_path/racon/build/bin/* /bin/`;
 }else{
 	chdir($thirdparty_path);
 	`rm -rf *`;
