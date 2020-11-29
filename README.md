@@ -122,7 +122,7 @@ RBRC output
 
 * Assembly output 
 
-        output_directory/
+        output_directory/Assembly/Final_assembly/assembly.fasta
 
 Additional information
 --------
