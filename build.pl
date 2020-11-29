@@ -102,16 +102,11 @@ if($mode eq "install"){
 		exit(1);
 	}
 
-	# SPAdes
-	print STDERR ">> Preparing SPAdes assembler...";
-	`tar xf $src_path/SPAdes-3.9.0.tar.gz -C $thirdparty_path`;
-	if(-f "$thirdparty_path/SPAdes-3.9.0/spades.py"){
-		`cp $thirdparty_path/SPAdes-3.9.0/spades.py $Bin/bin/`;
-		print STDERR "Done\n";
-	}else{
-		print STDERR "Error\n";
-		exit(1);
-	}
+        # SPAdes
+        print STDERR ">> Preparing SPAdes assembler...";
+        `wget http://cab.spbu.ru/files/release3.9.0/SPAdes-3.9.0-Linux.tar.gz -P $thirdparty_path`;
+        `tar xfz third_party/SPAdes-3.9.0-Linux.tar.gz -C $thirdparty_path`;
+        `ln -s $thirdparty_path/SPAdes-3.9.0-Linux/bin/* /bin/`;
 	
 	# blast
 	print STDERR ">> Preparing blast...";
