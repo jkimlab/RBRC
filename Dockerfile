@@ -43,4 +43,7 @@ RUN git clone https://github.com/jkimlab/RBRC \
 	&& ./setup.pl --install \
 	&& ./setup.pl --example \
 	&& ln -s /RBRC/third_party/SPAdes-3.9.0/spades.py /bin/ \
-	&& ln -s /RBRC/third_party/ncbi-blast-2.9.0+/* /bin/
+	&& ln -s /RBRC/third_party/ncbi-blast-2.9.0+/bin/* /bin/ \
+	&& ln -s /RBRC/third_party/samtools-1.9/samtools /bin/ \
+	&& ln -s /RBRC/third_party/bowtie2-2.4.2-linux-x86_64/bowtie2* /bin/ \
+	&& ln -s /RBRC/sources/pilon-1.23.jar /bin/
