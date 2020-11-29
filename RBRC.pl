@@ -345,7 +345,7 @@ print FLOG "RBRC clustering is finished.\n\tFinal clustering result: $out_dir/RB
 print STDERR "RBRC assembly (with Unicycler)\n";
 print FLOG "RBRC assembly (with Unicycler)\n";
 `mkdir -p $out_dir/Assembly/logs`;
-`$Bin/src/makeCMD_runAssembly.pl $out_dir/Reads/1.F.fq $out_dir/Reads/1.R.fq $out_dir/post_processing/merged.tailed.cluster $threads $out_dir/Assembly > $out_dir/Assembly/cmd_assembly.sh 2> $out_dir/Assembly/logs/log.makeCMD_runAssembly.txt`;
+`$Bin/src/makeCMD_runUnicycler.pl $out_dir/Reads/1.F.fq $out_dir/Reads/1.R.fq $out_dir/post_processing/merged.tailed.cluster $threads $out_dir/Assembly > $out_dir/Assembly/cmd_assembly.sh 2> $out_dir/Assembly/logs/log.makeCMD_runAssembly.txt`;
 `bash $out_dir/Assembly/cmd_assembly.sh`;
 print STDERR "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/Assembly/Final_assembly/assembly.fasta\n\n";
 print FLOG "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/Assembly/Final_assembly/assembly.fasta\n\n";
