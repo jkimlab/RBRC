@@ -18,7 +18,7 @@ if(! $mode){
 
 my $src_path = abs_path("$Bin/sources");
 my $thirdparty_path = abs_path("$Bin/third_party");
-my $log_dir = abs_path("$Bin/third_party/logs");
+my $log_dir = "$Bin/third_party/logs";
 `mkdir -p $log_dir`;
 
 if($mode eq "install"){
