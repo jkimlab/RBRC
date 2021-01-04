@@ -92,7 +92,7 @@ Running RBRC
         # Physical coverage paramters
         #PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
 
-        # SITRI paramters
+        # DBC paramters
         #DBC_READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
 
         # Cluster merging parameter
