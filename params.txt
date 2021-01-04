@@ -22,7 +22,7 @@ REF	2	NAME2 ./examples/fasta/ySR128.fa.gz
 # Physical coverage paramters
 #PHY_CUTOFF	LIB1	5
 
-# SITRI paramters
+# DBC paramters
 #DBC_READ_DIST_CUTOFF	1000
 
 # Cluster merging parameter
