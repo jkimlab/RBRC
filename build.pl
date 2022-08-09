@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use FindBin '$Bin';
 use File::Basename;
-use Cwd 'abs_path';
 
 my $mode = shift;
 
@@ -16,8 +15,8 @@ if(! $mode){
 	exit;
 }
 
-my $src_path = abs_path("$Bin/sources");
-my $thirdparty_path = abs_path("$Bin/third_party");
+my $src_path = "$Bin/sources";
+my $thirdparty_path = "$Bin/third_party";
 my $log_dir = "$Bin/third_party/logs";
 `mkdir -p $log_dir`;
 
@@ -90,54 +89,17 @@ if($mode eq "install"){
 		exit(1);
 	}
 
-	#  Unicycler
-	print STDERR ">> Preparing Unicycler...";
-	`tar xf $src_path/v0.4.7.tar.gz -C $thirdparty_path`;
-	`python3 $thirdparty_path/Unicycler-0.4.7/setup.py install --prefix=$thirdparty_path/Unicycler-0.4.7`;
-	if(-f "$thirdparty_path/Unicycler-0.4.7/unicycler-runner.py"){
-		`rm -f ./setuptools-33.1.1*`;
+	# SPAdes
+	print STDERR ">> Preparing SPAdes assembler...";
+	`tar xf $src_path/SPAdes-3.15.4-Linux.tar.gz -C $thirdparty_path`;
+	if(-f "$thirdparty_path/SPAdes-3.15.4-Linux/bin/spades.py"){
+		`cp $thirdparty_path/SPAdes-3.15.4-Linux/bin/spades.py $Bin/bin/`;
 		print STDERR "Done\n";
 	}else{
 		print STDERR "Error\n";
 		exit(1);
 	}
 
-        # SPAdes
-        print STDERR ">> Preparing SPAdes assembler...";
-        `wget http://cab.spbu.ru/files/release3.9.0/SPAdes-3.9.0-Linux.tar.gz -P $thirdparty_path`;
-        `tar xfz third_party/SPAdes-3.9.0-Linux.tar.gz -C $thirdparty_path`;
-        `ln -s $thirdparty_path/SPAdes-3.9.0-Linux/bin/* /bin/`;
-	
-	# blast
-	print STDERR ">> Preparing blast...";
-	`wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.9.0/ncbi-blast-2.9.0+-x64-linux.tar.gz -P $src_path/`;
-	`tar xf $src_path/ncbi-blast-2.9.0+-x64-linux.tar.gz -C $thirdparty_path`;
-	if(-f "$thirdparty_path/ncbi-blast-2.9.0+/bin/tblastn" && "$thirdparty_path/ncbi-blast-2.9.0+/bin/makeblastdb"){
-		`cp $thirdparty_path/ncbi-blast-2.9.0+/bin/tblastn $Bin/bin/`;
-		`cp $thirdparty_path/ncbi-blast-2.9.0+/bin/makeblastdb $Bin/bin/`;
-		`rm -f $src_path/ncbi-blast-2.9.0+-x64-linux.tar.gz`;
-		print STDERR "Done\n";
-	}else{
-		print STDERR "Error\n";
-		exit(1);
-	}
-	# racon
-        print STDERR ">> Preparing racon...\n";
-        `wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz -P $thirdparty_path/`;
-        chdir($thirdparty_path);
-        `tar xf cmake-3.2.2.tar.gz`;
-        chdir("cmake-3.2.2");
-        `./configure`;
-        `make`;
-        chdir($Bin);
-        `ln -s $thirdparty_path/cmake-3.2.2/bin/* /bin/`;
-        `git clone --recursive https://github.com/lbcb-sci/racon.git $thirdparty_path/racon`;
-        chdir("$thirdparty_path/racon");
-        `mkdir build`;
-        chdir("build");
-        `cmake -DCMAKE_BUILD_TYPE=Release ..`;
-        `make`;
-        `ln -s $thirdparty_path/racon/build/bin/* /bin/`;
 }else{
 	chdir($thirdparty_path);
 	`rm -rf *`;

@@ -28,22 +28,29 @@ if(!$param_f){
 }
 `mkdir -p $out_dir`;
 $out_dir = abs_path("$out_dir");
-####### Read paramters
-my $threads = 1;
-my %ref_names = ();
+####### PARAMS for used reference genome
 my %ref_fas = ();
+my $ref_similarity_cutoff = 80;
+my $tree_f = "";
+my $weight_f;
+
+####### PARAMS for synteny based clustering
 my $resolution = 10000;
-my %libs = ();
-my %lib_cutoffs = ();
+my $map_q = 0;
+my $chainNet_dir = "$out_dir/chainNet";
+my $syn_min_len = 1000;
+my $syn_cluster_min_size = 1;
+
+####### PARAMS for distance based clustering
 my $sitri_dist_cutoff = 1000;
 my $sitri_min_read_cutoff = 1;
 my $merge_min_read_cutoff = 5;
-my $syn_min_len = 1000;
-my $syn_cluster_min_size = 1;
-my $weight_f;
-my $map_q = 0;
-my $chainNet_dir = "$out_dir/chainNet";
-my $tree_f = "";
+
+####### PARAMS for running pipeline
+my $threads = 1;
+my %ref_names = ();
+my %libs = ();
+my %lib_cutoffs = ();
 
 $param_f = abs_path("$param_f");
 print STDERR " PARAMS check\n";
@@ -58,20 +65,22 @@ while(<PARAM>){
 		chomp($r);
 		$libs{$1}{"F"} = $f;
 		$libs{$1}{"R"} = $r;
+		next;
 	}
-
 	my @p = split(/\s+/);
 	switch ($p[0]){
 		case("THREADS") {$threads = $p[1];}
 		case("REF") {
-			$ref_names{$p[1]} = $p[2];
-			$ref_fas{$p[1]} = $p[3];
+#			$ref_names{$p[1]} = $p[2];
+#			$ref_fas{$p[1]} = $p[3];
+			$ref_fas{$p[2]} = $p[3]; ## Key: ref name | Value: fasta file path
 		}
 		case("RESOLUTION"){$resolution = $p[1];}
 		case("MAPQ"){$map_q = $p[1];}
 		case("PHY_CUTOFF"){$lib_cutoffs{$p[1]} = $p[2];}
 		case("DBC_READ_DIST_CUTOFF"){$sitri_min_read_cutoff = $p[1];}
 		case("MERGE_MIN_READS"){$merge_min_read_cutoff = $p[1];}
+		case("REF_SIMILARITY_CUTOFF"){ $ref_similarity_cutoff = $p[1]; }
 	}
 }
 close(PARAM);
@@ -85,6 +94,7 @@ print FLOG "[Basic parameters]\n";
 print FLOG " - output dir: $out_dir\n";
 print FLOG " - param file: $param_f\n";
 print FLOG " - threads: $threads\n";
+print FLOG " - reference similarity: >= $ref_similarity_cutoff\n";
 print FLOG " - resolution: $resolution\n";
 print FLOG " - mapping quality: $map_q\n";
 
@@ -96,7 +106,7 @@ print FLOG " Read id converting | working at $read_dir\n";
 foreach my $lib (natsort keys %libs){
 	my $l = $lib;
 	$l =~ s/LIB//;
-	`java -jar $Bin/sources/trimmomatic-0.39.jar PE $libs{$lib}{"F"} $libs{$lib}{"R"} $read_dir/PE.$l.F.fq $read_dir/PE_unpaired.$l.F.fq $read_dir/PE.$l.R.fq $read_dir/PE_unpaired.$l.R.fq ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads AVGQUAL:25 2> $out_dir/logs/log.trimmomatic.txt`;
+	`java -jar $Bin/sources/trimmomatic-0.39.jar PE $libs{$lib}{"F"} $libs{$lib}{"R"} $read_dir/PE.$l.F.fq $read_dir/PE_unpaired.$l.F.fq $read_dir/PE.$l.R.fq $read_dir/PE_unpaired.$l.R.fq ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads AVGQUAL:25 > $out_dir/logs/log.trimmomatic.txt 2>&1`;
 	`$Bin/src/fqNumID.pl $l F $read_dir/PE.$l.F.fq $read_dir`;
 	`$Bin/src/fqNumID.pl $l R $read_dir/PE.$l.R.fq $read_dir`;
 	$libs{$lib}{"F"} = "$read_dir/$l.F.fq";
@@ -114,11 +124,12 @@ my $max_w = 0;
 my %hs_weight = ();
 print STDERR "  Read mapping\n";
 print FLOG "  Read mapping\n";
-foreach my $num (natsort keys %ref_fas){
-	`$Bin/src/fasta_id_convert.pl $ref_fas{$num} $out_dir/pre-processing/$ref_names{$num}.fa`;
-	print STDERR "  > $ref_names{$num}\n";
-	print FLOG "  > $ref_names{$num}\n";
-	my $mapping_ref = "$out_dir/pre-processing/$ref_names{$num}.fa";
+my $leading_reference = "";
+foreach my $name (sort keys %ref_fas){
+	`$Bin/src/fasta_id_convert.pl $ref_fas{$name} $out_dir/pre-processing/$name.fa`;
+	print STDERR "  > $name\n";
+	print FLOG "  > $name\n";
+	my $mapping_ref = "$out_dir/pre-processing/$name.fa";
 	if(!-f "$mapping_ref.ann" || !-f "$mapping_ref.bwt" || !-f "$mapping_ref.pac" || !-f "$mapping_ref.sa"){`$Bin/third_party/bwa/bwa index $mapping_ref`;}
 	my ($total_qc_read, $proper_pe_read) = 0;
 	foreach my $lib (natsort keys %libs){
@@ -126,10 +137,10 @@ foreach my $num (natsort keys %ref_fas){
 		print FLOG "    $lib...";
 		my $f_read = $libs{$lib}{"F"};
 		my $r_read = $libs{$lib}{"R"};
-		`$Bin/third_party/bwa/bwa mem -t $threads $mapping_ref $f_read $r_read | $Bin/third_party/samtools-1.9/samtools view --threads $threads -h -q $map_q -F 0xF00 -Sb - > $out_dir/pre-processing/$ref_names{$num}.$lib.bam`;
-		`$Bin/third_party/samtools-1.9/samtools flagstat -@ 20 $out_dir/pre-processing/$ref_names{$num}.$lib.bam > $out_dir/pre-processing/$ref_names{$num}.$lib.stat`;
-		my $cur_reads = `head -1 $out_dir/pre-processing/$ref_names{$num}.$lib.stat | cut -f1 -d ' '`;
-		my $cur_proper = `grep properly $out_dir/pre-processing/$ref_names{$num}.$lib.stat | cut -f1 -d ' '`;
+		`$Bin/third_party/bwa/bwa mem -t $threads $mapping_ref $f_read $r_read | $Bin/third_party/samtools-1.9/samtools view --threads $threads -h -q $map_q -F 0xF00 -Sb - > $out_dir/pre-processing/$name.$lib.bam`;
+		`$Bin/third_party/samtools-1.9/samtools flagstat -@ 20 $out_dir/pre-processing/$name.$lib.bam > $out_dir/pre-processing/$name.$lib.stat`;
+		my $cur_reads = `head -1 $out_dir/pre-processing/$name.$lib.stat | cut -f1 -d ' '`;
+		my $cur_proper = `grep properly $out_dir/pre-processing/$name.$lib.stat | cut -f1 -d ' '`;
 		chomp($cur_reads,$cur_proper);
 		$total_qc_read += $cur_reads;
 		$proper_pe_read += $cur_proper;
@@ -137,15 +148,26 @@ foreach my $num (natsort keys %ref_fas){
 		print FLOG "done\n";
 	}
 	my $perc_proper = ($proper_pe_read/$total_qc_read)*100;
-	$hs_weight{$ref_names{$num}} = $perc_proper;
-	if($max_w < $perc_proper){ $max_w = $perc_proper; }
-	$total_w += $perc_proper;
+	if($perc_proper < $ref_similarity_cutoff){
+			print STDERR "  too low similarity ($perc_proper), $name will not be used\n";
+			print FLOG "  too low similarity ($perc_proper), $name will not be used\n";
+	}
+	else{
+			$hs_weight{$name} = $perc_proper;
+			if($max_w < $perc_proper){
+					$max_w = $perc_proper;
+					$leading_reference = $name;
+			}
+			$total_w += $perc_proper;
+	}
 }
 
 my $i = 1;
-my @arr_names = values(%ref_names);
+#my @arr_names = values(%ref_names);
+my @arr_names = keys(%hs_weight);
 for(my $n = 0; $n <= $#arr_names; $n++){
-		if($hs_weight{$arr_names[$n]} == $max_w){ 
+#		if($hs_weight{$arr_names[$n]} == $max_w){ 
+		if($arr_names[$n] eq $leading_reference){ 
 				$ref_names{1} = $arr_names[$n];
 				foreach my $lib (natsort keys %libs){
 					`$Bin/third_party/samtools-1.9/samtools view --threads $threads -h -f 0x03 -b $out_dir/pre-processing/$ref_names{1}.$lib.bam -o $out_dir/pre-processing/$lib.properPE.bam`;
@@ -342,10 +364,12 @@ print FLOG " - done\n\n";
 print STDERR "RBRC clustering is finished.\n\tFinal clustering result: $out_dir/RBRC.cluster\n\n";
 print FLOG "RBRC clustering is finished.\n\tFinal clustering result: $out_dir/RBRC.cluster\n\n";
 
-print STDERR "RBRC assembly (with Unicycler)\n";
-print FLOG "RBRC assembly (with Unicycler)\n";
-`mkdir -p $out_dir/Assembly/logs`;
-`$Bin/src/makeCMD_runUnicycler.pl $out_dir/Reads/1.F.fq $out_dir/Reads/1.R.fq $out_dir/post_processing/merged.tailed.cluster $threads $out_dir/Assembly > $out_dir/Assembly/cmd_assembly.sh 2> $out_dir/Assembly/logs/log.makeCMD_runAssembly.txt`;
-`bash $out_dir/Assembly/cmd_assembly.sh`;
-print STDERR "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/Assembly/Final_assembly/assembly.fasta\n\n";
-print FLOG "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/Assembly/Final_assembly/assembly.fasta\n\n";
+print STDERR "RBRC assembly (with SPAdes)\n";
+print FLOG "RBRC assembly (with SPAdes)\n";
+`mkdir -p $out_dir/SPAdes/logs`;
+#`$Bin/src/makeCMD_runUnicycler.pl $out_dir/Reads/1.F.fq $out_dir/Reads/1.R.fq $out_dir/post_processing/merged.tailed.cluster $threads $out_dir/Unicycler > $out_dir/Unicycler/cmd_assembly.sh 2> $out_dir/Unicycler/logs/log.makeCMD_runUnicycler.txt`;
+`$Bin/src/makeCMD_runSPAdes.pl $out_dir/Reads/1.F.fq $out_dir/Reads/1.R.fq $out_dir/post_processing/merged.tailed.cluster $threads $out_dir/SPAdes > $out_dir/SPAdes/cmd_assembly.sh 2> $out_dir/SPAdes/logs/log.makeCMD_runSPAdes.txt`;
+`bash $out_dir/SPAdes/cmd_assembly.sh`;
+print STDERR "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/SPAdes/Final_assembly/.fasta\n\n";
+print FLOG "RBRC assembly is finished.\n\tFinal assembly result: $out_dir/SPAdes/Final_assembly/assembly.fasta\n\n";
+
