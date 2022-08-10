@@ -1,63 +1,49 @@
-RBRC
+# OVERVIEW
 -----------------
+RBRC is a tool for NGS paired-end read clustering and de novo assembly based on Reference genome sequence-based read clustering
 
-* Reference genome sequence-based read clustering
-
-
-System requirements (tested versions)
+## REQUIREMENTS
 -----------------
+### System requirements
 
-* Programs
+- gcc, g++ (7.5.0)
+- make (GNU Make 4.1)
+- java (1.8.0)
+- wget (1.17.1)
+- zip (3.0)
+- git (2.7.4)
 
-        - perl (v5.22.1)
-        - python (3)
-        - java (1.8.0)
-        - git (2.7.4)
-        - gcc, g++ (7.5.0)
-        - make (GNU Make 4.1)
-        - zip (3.0)
-        - wget (1.17.1)
-        - bwa (0.7.17)
-        - samtools (1.9)
-        - Unicycler (v0.4.7)
-          - bowtie2 (2.4.2)
-          - tblastn (2.9.0+)
-          - makeblastdb (2.9.0+)
-          - Pilon (1.23)
-          - SPAdes (3.9.0)
-          - racon (1.4.16)
-            - cmake (3.2+)
-        - Sort::Key::Natural (perl library)
-        - Bio::TreeIO (perl library)
-        - Parallel::ForkManager (perl library)
-        - Switch (perl library)
-        
+### Perl libraries
 
-Download and installation
+- Sort::Key::Natural (perl library)
+- Bio::TreeIO (perl library)
+- Parallel::ForkManager (perl library)
+- Switch (perl library)
+
+## INSTALLATION
 -----------------
+### Manual installation
 
-* Downloading RBRC
+- Download and install using RBRC package from this github page. You can install all third party tools automatically for running RBRC using 'setup.pl'. 
 
         git clone https://github.com/jkimlab/RBRC.git
         cd RBRC
+        ./setup.pl --install
         
-     Installing by docker (https://www.docker.com/)
-    
-        [Build docker image]
-        docker build -t rbrc .
-        
-        [Run a container]
-        docker run -it rbrc /bin/bash
-        cd RBRC
-        
-        (Then third-party tools and and example dataset are set.)
+### Docker installation
+
+- If you use Docker, you can download and use RBRC with all dependencies through pulling docker image.
+
+        docker pull jkimlab/rbrc
+
+- If you want to see manual for running RBRC docker image, see :point_right: [https://hub.docker.com/r/jkimlab/rbrc]
 
 
-Running RBRC
+## RUNNING RBRC
 -----------------
+### Example data
 
-* Running RBRC with example datasets and parameters 
-        
+        ./setup.pl --example
         bash example_cmd.sh
    
         * Before running this command, you have to set the examples of RBRC
@@ -66,7 +52,7 @@ Running RBRC
         
         ./RBRC.pl -p [parameter file] -o [output directory]
         
-* To run RBRC, you need to prepare a parameter file
+* To run RBRC, you need to prepare a parameter file as follows
 
         #---------------------------------------------------------------------------------------#
         ## Mendatory !
@@ -83,20 +69,21 @@ Running RBRC
         #---------------------------------------------------------------------------------------#
         ## Optional
         # Running paramters
-        #THREADS        <number of threads: default = 1>
-        #MAPQ <read mapping quality threshold: default = 0>
+        THREADS        <number of threads: default = 1>
+        REF_SIMILARITY_CUTOFF <minimum cutoff value of properly mapped reads: default = 80>
+        MAPQ <read mapping quality threshold: default = 0>
 
         # Pairwise alignment & synteny block construction params
-        #RESOLUTION	<Resolution to construct synteny: default = 10000
+        RESOLUTION	<Resolution to construct synteny: default = 10000
 
         # Physical coverage paramters
-        #PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
+        PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
 
-        # DBC paramters
-        #DBC_READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
+        # Distance based clustering paramters
+        DBC_READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
 
         # Cluster merging parameter
-        #MERGE_MIN_READS	<minimum cutoff value of links to merge clusters: default = 5>
+        MERGE_MIN_READS	<minimum cutoff value of links to merge clusters: default = 5>
         #---------------------------------------------------------------------------------------#
        
 
@@ -124,21 +111,4 @@ RBRC output
 
 * Assembly output 
 
-        output_directory/Assembly/Final_assembly/assembly.fasta
-
-Additional information
---------
-
-        
-   How to intall and uninstall third-party tools  
-        
-        [ Install RBRC package ]
-        ./setup.pl --install
-        
-        [ Uninstall RBRC package ]
-        ./setup.pl --uninstall
-        
-   How to make an example dataset 
-         
-         ./setup.pl --example
-
+        output_directory/SPAdes/Final_assembly/assembly.fasta
