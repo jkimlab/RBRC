@@ -1,9 +1,9 @@
 # OVERVIEW
------------------
+
 RBRC is a tool for NGS paired-end read clustering and de novo assembly based on Reference genome sequence-based read clustering
 
 ## REQUIREMENTS
------------------
+
 ### System requirements
 
 - gcc, g++ (7.5.0)
@@ -21,7 +21,7 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
 - Switch (perl library)
 
 ## INSTALLATION
------------------
+
 ### Manual installation
 
 - Download and install using RBRC package from this github page. You can install all third party tools automatically for running RBRC using 'setup.pl'. 
@@ -40,7 +40,7 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
 
 
 ## RUNNING RBRC
------------------
+
 ### Example data
 
         ./setup.pl --example
@@ -87,8 +87,8 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
         #---------------------------------------------------------------------------------------#
        
 
-RBRC output
------------------
+## RBRC output
+
 
 * Clustering output
 
