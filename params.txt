@@ -1,30 +1,31 @@
-#---------------------------------------------------------------------------------------#
-## Mendatory !
-# Reference genomes
-REF	1	NAME1 ./examples/fasta/BY4742.fa.gz
-REF	2	NAME2 ./examples/fasta/ySR128.fa.gz
+  #---------------------------------------------------------------------------------------#
+  ## Mendatory !
+  # Reference genomes
+  REF	1	<Reference name 1> <Reference genome sequence 1>
+  REF	2	<Reference name 2> <Reference genome sequence 2>
 
-# NGS reads
-# FASTQ
->LIB1
-./examples/test_dataset/S288C_simulated1.fq.gz
-./examples/test_dataset/S288C_simulated2.fq.gz
+  # NGS reads
+  # FASTQ
+  >LIB1
+  <F read fastq file>
+  <R read fastq file>
 
-#---------------------------------------------------------------------------------------#
-## Optional
-# Running paramters
-#THREADS	20
-#MAPQ 0
+  #---------------------------------------------------------------------------------------#
+  ## Optional
+  # Running paramters
+  THREADS        <number of threads: default = 1>
+  REF_SIMILARITY_CUTOFF <minimum cutoff value of properly mapped reads: default = 80>
+  MAPQ <read mapping quality threshold: default = 0>
 
-# Pairwise alignment & synteny block construction params
-#RESOLUTION	10000
+  # Pairwise alignment & synteny block construction params
+  RESOLUTION	<Resolution to construct synteny: default = 10000
 
-# Physical coverage paramters
-#PHY_CUTOFF	LIB1	5
+  # Physical coverage paramters
+  PHY_CUTOFF	LIB1	<minimum cutoff value for physical coverage-based syntenic region break: default = 5>
 
-# DBC paramters
-#DBC_READ_DIST_CUTOFF	1000
+  # Distance based clustering paramters
+  DBC_READ_DIST_CUTOFF	<maximum cutoff value of read distance for matrix calculation: default = 1000>
 
-# Cluster merging parameter
-#MERGE_MIN_READS	5
-#---------------------------------------------------------------------------------------#
+  # Cluster merging parameter
+  MERGE_MIN_READS	<minimum cutoff value of links to merge clusters: default = 5>
+  #---------------------------------------------------------------------------------------#
