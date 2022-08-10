@@ -36,7 +36,7 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
 
         docker pull jkimlab/rbrc
 
-- If you want to see manual for running RBRC docker image, see :point_right: [https://hub.docker.com/r/jkimlab/rbrc]
+- If you want to see manual for running RBRC docker image, see :point_right: [RBRC Docker hub](https://hub.docker.com/r/jkimlab/rbrc)
 
 
 ## RUNNING RBRC
