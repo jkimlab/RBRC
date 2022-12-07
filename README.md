@@ -112,3 +112,29 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
 * Assembly output 
 
         output_directory/SPAdes/Final_assembly/assembly.fasta
+
+## Required resourses for example datasets
+### Time
+| Coverage | 2REF | 3REF | 4REF |
+| --- | --- | --- | --- |
+| 5x | 89 min	| 106 min	| 178 min |
+| 10x | 85 min	| 91 min	| 103 min |
+| 30x | 176 min	| 182 min	| 233 min |
+| 50x | 279 min	| 285 min	| 370 min |
+
+### Memory
+| Coverage | 2REF | 3REF | 4REF |
+| --- | --- | --- | --- |
+| 5x | 1320107KB	| 1452118KB	| 1584129KB |
+| 10x | 1584129KB	| 1716140KB	| 1584129KB |
+| 30x | 4488365KB	| 4488365KB	| 4488365KB |
+| 50x | 7920644KB	| 7920644KB	| 7656623KB |
+		
+### Disk
+| Coverage | 2REF | 3REF | 4REF |
+| --- | --- | --- | --- |
+| 5x | 2.2G	| 2.4G	| 3.1G |
+| 10x | 2.8G	| 2.9G	| 3.3G |
+| 30x | 6.7G	| 7.2G	| 7.9G |
+| 50x | 11G	| 12G	| 13G |
+
