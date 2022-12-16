@@ -125,10 +125,10 @@ RBRC is a tool for NGS paired-end read clustering and de novo assembly based on 
 ### Memory
 | Coverage | 2REF | 3REF | 4REF |
 | --- | --- | --- | --- |
-| 5x | 1320107KB	| 1452118KB	| 1584129KB |
-| 10x | 1584129KB	| 1716140KB	| 1584129KB |
-| 30x | 4488365KB	| 4488365KB	| 4488365KB |
-| 50x | 7920644KB	| 7920644KB	| 7656623KB |
+| 5x | 1.258952GB	| 1.384848GB	| 1.510743GB |
+| 10x | 1.510743GB	| 1.636639GB	| 1.510743GB |
+| 30x | 4.280438GB	| 4.280438GB	| 4.280438GB |
+| 50x | 7.553715GB	| 7.553715GB	| 7.301925GB |
 		
 ### Disk
 | Coverage | 2REF | 3REF | 4REF |
